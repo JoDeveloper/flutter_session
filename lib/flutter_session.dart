@@ -32,7 +32,10 @@ class FlutterSession {
   Future get(key) async {
     await _initSharedPrefs();
     try {
-      return json.decode(this.prefs.get(key));
+      if (this.prefs.get(key).isNotEmpty && this.prefs.get(key) != null) {
+        return json.decode(this.prefs.get(key));
+      }
+      return this.prefs.get(key);
     } catch (e) {
       return this.prefs.get(key);
     }
