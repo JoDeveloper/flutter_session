@@ -5,7 +5,10 @@ class Data {
   final int id;
   final String data;
 
-  Data({this.data, this.id});
+  Data({
+    required this.data,
+    required this.id,
+  });
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -16,7 +19,7 @@ class Data {
 }
 
 class Page1 extends StatelessWidget {
-  const Page1({Key key}) : super(key: key);
+  const Page1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class Page1 extends StatelessWidget {
   }
 
   Future<void> saveData(context) async {
-    Data myData = Data(data: "Lorem ipsum, something, something...", id: 1);
+    final myData = Data(data: "Lorem ipsum, something, something...", id: 1);
 
     await FlutterSession().set('myData', myData);
     Navigator.push(context, MaterialPageRoute(builder: (context) => const Page2()));
@@ -38,15 +41,25 @@ class Page1 extends StatelessWidget {
 }
 
 class Page2 extends StatelessWidget {
-  const Page2({Key key}) : super(key: key);
+  const Page2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Material(
-        child: FutureBuilder(
-            future: FlutterSession().get('myData'),
-            builder: (context, snapshot) {
-              return Text(snapshot.hasData ? "${snapshot.data['id']}|" + snapshot.data['data'] : 'Loading...');
-            }));
+      child: FutureBuilder(
+        future: FlutterSession().get('myData'),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final Data data = snapshot.data as Data;
+            return Text(data.data);
+          }
+          if (snapshot.hasData) {
+            final data = snapshot.data as Data;
+            return Text(snapshot.hasData ? "${data.id}|${data.data}" : 'Loading...');
+          }
+          return const SizedBox.shrink();
+        },
+      ),
+    );
   }
 }
