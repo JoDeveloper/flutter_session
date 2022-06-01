@@ -8,7 +8,7 @@ class Data {
   Data({this.data, this.id});
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data["id"] = id;
     data["data"] = this.data;
     return data;
@@ -16,13 +16,15 @@ class Data {
 }
 
 class Page1 extends StatelessWidget {
+  const Page1({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: FutureBuilder(
           future: saveData(context),
           builder: (context, snapshot) {
-            return Text("You will not see this");
+            return const Text("You will not see this");
           }),
     );
   }
@@ -31,20 +33,20 @@ class Page1 extends StatelessWidget {
     Data myData = Data(data: "Lorem ipsum, something, something...", id: 1);
 
     await FlutterSession().set('myData', myData);
-    Navigator.push(context, MaterialPageRoute(builder: (_context) => Page2()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const Page2()));
   }
 }
 
 class Page2 extends StatelessWidget {
+  const Page2({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Material(
         child: FutureBuilder(
             future: FlutterSession().get('myData'),
             builder: (context, snapshot) {
-              return Text(snapshot.hasData
-                  ? snapshot.data['id'].toString() + "|" + snapshot.data['data']
-                  : 'Loading...');
+              return Text(snapshot.hasData ? "${snapshot.data['id']}|" + snapshot.data['data'] : 'Loading...');
             }));
   }
 }
